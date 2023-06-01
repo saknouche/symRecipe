@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  SymRecipe - Mes ingrédients
+{% endblock %}
+
+{% block body %}
+  <div class="container mt-4">
+    {# Condition en fonction s'il y a un array [] non vide ou empty #}
+    {% if ingredients.items is not same as([]) %}
+      <h1 class="d-flex align-items-center">Mes ingrédients | <a href="{{ path('ingredient.new') }}" class="btn btn-primary mx-2">Créer un ingrédient</a></h1>
+      {# Message flash success ajout d'ingrédient #}
+      {% for message in app.flashes('success') %}
+        <div class="alert alert-success mt-4">{{ message|raw }}</div>
+      {% endfor %}
+      {% for message in app.flashes('error') %}
+        <div class="alert alert-danger mt-4">{{ message|raw }}</div>
+      {% endfor %}
+      <div class="count">
+        Il y a <b class="text-primary">{{ ingredients.getTotalItemCount }}</b> ingrédients au total
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Numéro</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Prix</th>
+            <th scope="col">Date de création</th>
+            <th scope="col">Edition</th>
+            <th scope="col">Suppression</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ingredient in ingredients %}
+            <tr class="table-primary">
+              <th scope="row">{{ ingredient.id }}</th>
+              <td>{{ ingredient.name }}</td>
+              <td>{{ ingredient.price }} €</td>
+              <td>{{ ingredient.createdAt|date('m/d/Y') }}</td>
+              <td>
+                <a href="{{ path('ingredient.edit', { id: ingredient.id }) }}" class="btn btn-info">Modifier</a>
+              </td>
+              <td>
+                <a href="{{ path('ingredient.delete', { id: ingredient.id }) }}" class="btn btn-danger">Supprimer</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {# display navigation #}
+      <div class="d-flex justify-content-center mt-4">{{ knp_pagination_render(ingredients) }}</div>
+    {% else %}
+      <div class="alert alert-primary">Il n'y a pas d'ingrédients !</div>
+    {% endif %}
+  </div>
+{% endblock %}
